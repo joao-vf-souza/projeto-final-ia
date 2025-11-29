@@ -44,12 +44,12 @@ env/
 .env
 .env.local
 
-# Models (opcional - descomentar se quiser versioná-los)
-# data/model_real.pkl
-# data/model.pkl
+# Models - Arquivos muito grandes para o GitHub
+data/model_real.pkl
+data/model.pkl
 
-# Large datasets (opcional)
-# data/Diseases_and_Symptoms_dataset.csv
+# Large datasets - Baixar do Kaggle
+data/Diseases_and_Symptoms_dataset.csv
 
 # Logs
 *.log

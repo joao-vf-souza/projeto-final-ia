@@ -45,17 +45,27 @@ cd projeto-final-ia
 pip install -r requirements.txt
 ```
 
-3. Baixe o dataset (se necessário):
+3. **IMPORTANTE:** Baixe o dataset e treine o modelo:
+   
+   **Passo 3.1 - Baixar o Dataset:**
    - Acesse: [SymScan Dataset no Kaggle](https://www.kaggle.com/datasets/behzadhassan/sympscan-symptomps-to-disease)
-   - Baixe o arquivo `Diseases_and_Symptoms_dataset.csv`
-   - Coloque na pasta `data/`
+   - Faça login no Kaggle (crie uma conta se necessário)
+   - Clique em **"Download"** (arquivo ZIP ~45 MB)
+   - Extraia o arquivo `Diseases_and_Symptoms_dataset.csv`
+   - Coloque na pasta `data/` do projeto
+   
+   **Passo 3.2 - Treinar o Modelo:**
+   ```bash
+   python train_model_real.py
+   ```
+   
+   Este processo irá:
+   - Carregar o dataset (96.088 amostras)
+   - Treinar o Random Forest (pode levar alguns minutos)
+   - Salvar o modelo treinado em `data/model_real.pkl`
+   - Exibir métricas de desempenho
 
-4. Treine o modelo:
-```bash
-python train_model_real.py
-```
-
-5. Execute a aplicação:
+4. Execute a aplicação:
 ```bash
 streamlit run app.py
 ```
@@ -64,7 +74,7 @@ ou
 python -m streamlit run app.py
 ```
 
-6. Acesse no navegador:
+5. Acesse no navegador:
 ```
 http://localhost:8501
 ```
@@ -80,16 +90,20 @@ projeto-final-ia/
 ├── emergency_level.py              # Sistema de níveis de emergência
 ├── requirements.txt                # Dependências do projeto
 ├── README.md                       # Documentação
+├── LICENSE                         # Licença MIT
+├── .gitignore                      # Arquivos ignorados pelo Git
 │
 └── data/
-    ├── Diseases_and_Symptoms_dataset.csv  # Dataset principal
-    ├── model_real.pkl                     # Modelo treinado
+    ├── Diseases_and_Symptoms_dataset.csv  # Dataset principal (baixar do Kaggle)
+    ├── model_real.pkl                     # Modelo treinado (gerado após treino)
     ├── description.csv                    # Descrições de doenças
     ├── medications.csv                    # Medicamentos
     ├── precautions.csv                    # Precauções
     ├── diets.csv                          # Dietas recomendadas
     └── workout.csv                        # Exercícios recomendados
 ```
+
+> **⚠️ Nota:** Os arquivos `model_real.pkl` e `Diseases_and_Symptoms_dataset.csv` não estão incluídos no repositório devido ao tamanho (>100MB). Você deve baixar o dataset do Kaggle e treinar o modelo localmente.
 
 ## 🛠️ Tecnologias Utilizadas
 
