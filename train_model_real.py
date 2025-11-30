@@ -1,7 +1,19 @@
 """
 train_model_real.py
-Script para treinar modelo com dataset real SympScan
-Execute ANTES de rodar o Streamlit: python train_model_real.py
+
+Script de treinamento do modelo de diagnóstico médico usando Random Forest.
+Utiliza o dataset SymScan do Kaggle com 96.088 amostras, 230 sintomas e 100 doenças.
+
+Uso:
+    python train_model_real.py
+
+Pré-requisitos:
+    - Dataset 'Diseases_and_Symptoms_dataset.csv' na pasta data/
+    - Dependências instaladas (requirements.txt)
+
+Saída:
+    - Modelo treinado salvo em data/model_real.pkl
+    - Métricas de desempenho exibidas no console
 """
 
 import pandas as pd
@@ -15,10 +27,18 @@ import joblib
 
 class DiagnosticClassifierReal:
     """
-    Classificador para dataset real SympScan
+    Classificador de diagnósticos médicos usando Random Forest.
+    
+    Atributos:
+        model: Modelo Random Forest treinado
+        label_encoder: Codificador de labels para diagnósticos
+        symptoms_list: Lista de sintomas utilizados como features
+        diagnoses: Lista de diagnósticos possíveis
+        feature_importance: Importância de cada sintoma na predição
     """
     
     def __init__(self):
+        """Inicializa o classificador com atributos vazios."""
         self.model = None
         self.label_encoder = None
         self.symptoms_list = None
@@ -27,25 +47,32 @@ class DiagnosticClassifierReal:
     
     def load_real_dataset(self, csv_path):
         """
-        Carrega dataset real do SympScan
+        Carrega e processa o dataset SymScan.
         
-        Formato esperado:
-        - Primeira coluna: doença/diagnóstico
-        - Demais colunas: sintomas (0 ou 1)
+        Formato esperado do CSV:
+            - Primeira coluna: nome da doença/diagnóstico
+            - Demais colunas: sintomas binários (0 = ausente, 1 = presente)
+        
+        Parâmetros:
+            csv_path (str): Caminho para o arquivo CSV do dataset
+        
+        Retorna:
+            DataFrame: Dataset carregado e processado
         """
-        print(f"📂 Carregando dataset de: {csv_path}")
+        print(f"Carregando dataset de: {csv_path}")
         df = pd.read_csv(csv_path)
         
         print(f"   Shape original: {df.shape}")
         
-        # Primeira coluna é o diagnóstico
+        # Identifica colunas: primeira é diagnóstico, restantes são sintomas
         disease_col = df.columns[0]
         symptom_cols = df.columns[1:].tolist()
         
+        # Armazena diagnósticos únicos e lista de sintomas
         self.diagnoses = df[disease_col].unique().tolist()
         self.symptoms_list = symptom_cols
         
-        print(f"✓ Dataset carregado!")
+        print(f"Dataset carregado com sucesso!")
         print(f"   - Amostras: {len(df)}")
         print(f"   - Sintomas: {len(self.symptoms_list)}")
         print(f"   - Doenças: {len(self.diagnoses)}")

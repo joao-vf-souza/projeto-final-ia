@@ -1,12 +1,12 @@
-# 🏥 Sistema de Diagnóstico Médico com IA
+# Sistema de Diagnóstico Médico com IA
 
 Sistema inteligente de diagnóstico baseado em sintomas usando Machine Learning. Desenvolvido como trabalho final do curso de Inteligência Artificial.
 
-## 📋 Sobre o Projeto
+## Sobre o Projeto
 
 Este sistema utiliza **Random Forest Classifier** para prever possíveis diagnósticos médicos baseado em sintomas informados pelo usuário. O modelo foi treinado com o dataset **SymScan** do Kaggle, contendo 96.088 amostras com 230 sintomas diferentes e 100 doenças.
 
-### 🎯 Funcionalidades
+### Funcionalidades
 
 - ✅ Diagnóstico baseado em sintomas selecionados
 - ✅ Classificação de nível de emergência (Verde, Amarelo, Laranja, Vermelho)
@@ -15,7 +15,7 @@ Este sistema utiliza **Random Forest Classifier** para prever possíveis diagnó
 - ✅ Análise de importância de sintomas
 - ✅ Métricas e gráficos de desempenho do modelo
 
-## 📊 Desempenho do Modelo
+## Desempenho do Modelo
 
 - **Acurácia de Treino:** 92.69%
 - **Acurácia de Teste:** 86.34%
@@ -25,7 +25,7 @@ Este sistema utiliza **Random Forest Classifier** para prever possíveis diagnó
 - **Features:** 230 sintomas
 - **Classes:** 100 diagnósticos
 
-## 🚀 Como Executar
+## Como Executar
 
 ### Pré-requisitos
 
@@ -79,33 +79,26 @@ python -m streamlit run app.py
 http://localhost:8501
 ```
 
-## 📁 Estrutura do Projeto
+## Estrutura do Projeto
 
 ```
 projeto-final-ia/
 │
 ├── app.py                          # Interface Streamlit
 ├── train_model_real.py             # Script de treinamento do modelo
-├── classifier.py                   # Classe do classificador (demo)
 ├── emergency_level.py              # Sistema de níveis de emergência
 ├── requirements.txt                # Dependências do projeto
 ├── README.md                       # Documentação
-├── LICENSE                         # Licença MIT
 ├── .gitignore                      # Arquivos ignorados pelo Git
 │
 └── data/
     ├── Diseases_and_Symptoms_dataset.csv  # Dataset principal (baixar do Kaggle)
-    ├── model_real.pkl                     # Modelo treinado (gerado após treino)
-    ├── description.csv                    # Descrições de doenças
-    ├── medications.csv                    # Medicamentos
-    ├── precautions.csv                    # Precauções
-    ├── diets.csv                          # Dietas recomendadas
-    └── workout.csv                        # Exercícios recomendados
+    └── model_real.pkl                     # Modelo treinado (gerado após treino)
 ```
 
 > **⚠️ Nota:** Os arquivos `model_real.pkl` e `Diseases_and_Symptoms_dataset.csv` não estão incluídos no repositório devido ao tamanho (>100MB). Você deve baixar o dataset do Kaggle e treinar o modelo localmente.
 
-## 🛠️ Tecnologias Utilizadas
+## Tecnologias Utilizadas
 
 - **Python 3.13**
 - **Scikit-learn** - Machine Learning
@@ -116,7 +109,7 @@ projeto-final-ia/
 - **Matplotlib** - Gráficos estáticos
 - **Joblib** - Serialização do modelo
 
-## 🔬 Metodologia
+## Metodologia
 
 ### Algoritmo: Random Forest Classifier
 - **200 árvores de decisão**
@@ -132,7 +125,7 @@ projeto-final-ia/
 5. Avaliação de métricas
 6. Serialização do modelo
 
-## 📈 Níveis de Emergência
+## Níveis de Emergência
 
 O sistema classifica automaticamente o diagnóstico em 4 níveis:
 
@@ -141,7 +134,7 @@ O sistema classifica automaticamente o diagnóstico em 4 níveis:
 - 🟠 **Laranja (Emergência):** Procurar pronto-socorro hoje
 - 🔴 **Vermelho (Crítica):** Ligar 192 imediatamente
 
-## ⚠️ Aviso Importante
+## Aviso Importante
 
 **ESTE SISTEMA É APENAS PARA FINS EDUCACIONAIS**
 
@@ -150,7 +143,7 @@ O sistema classifica automaticamente o diagnóstico em 4 níveis:
 - ✅ Em caso de emergência, ligue **192** ou procure o pronto-socorro
 - ✅ Sempre consulte um médico qualificado
 
-## 🧪 Testes
+## Testes
 
 Para testar o modelo após o treinamento:
 
@@ -165,7 +158,7 @@ O script irá:
 4. Mostrar os 10 sintomas mais importantes
 5. Salvar o modelo treinado
 
-## 📝 Melhorias Futuras
+## Melhorias Futuras
 
 - [ ] Adicionar mais datasets médicos
 - [ ] Implementar rede neural profunda
@@ -175,15 +168,11 @@ O script irá:
 - [ ] App mobile (Flutter/React Native)
 - [ ] Explicabilidade com SHAP/LIME
 
-## 👨‍💻 Autor
+## Autor
 
 Desenvolvido como trabalho final do curso de Inteligência Artificial.
 
-## 📄 Licença
-
-Este projeto é para fins educacionais. Consulte o arquivo LICENSE para mais detalhes.
-
-## 🙏 Agradecimentos
+## Agradecimentos
 
 - Dataset: [SymScan - Kaggle](https://www.kaggle.com/datasets/behzadhassan/sympscan-symptomps-to-disease)
 - Comunidade Streamlit

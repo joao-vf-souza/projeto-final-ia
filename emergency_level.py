@@ -1,7 +1,12 @@
 class EmergencyLevel:
     """
-    Sistema de classificação de nível de emergência baseado no diagnóstico.
-    Define níveis: VERDE, AMARELO, LARANJA, VERMELHO
+    Sistema de classificação de nível de emergência médica.
+    
+    Classifica diagnósticos em 4 níveis de urgência:
+    - VERDE: Baixa urgência (consulta em dias)
+    - AMARELO: Urgência moderada (consulta em horas)
+    - LARANJA: Emergência (atendimento imediato)
+    - VERMELHO: Emergência crítica (ambulância/192)
     """
     
     LEVELS = {
@@ -50,35 +55,57 @@ class EmergencyLevel:
     @classmethod
     def get_level(cls, diagnosis, confidence=None):
         """
-        Retorna o nível de emergência para um diagnóstico.
+        Retorna o nível de emergência para um diagnóstico específico.
         
-        Args:
-            diagnosis: diagnóstico predito
-            confidence: confiança da predição (0-1)
+        Parâmetros:
+            diagnosis (str): Nome do diagnóstico/doença
+            confidence (float, optional): Confiança da predição entre 0 e 1
         
-        Returns:
-            dict com informações do nível de emergência
+        Retorna:
+            dict: Dicionário contendo informações do nível de emergência:
+                - level: código do nível (VERDE, AMARELO, LARANJA, VERMELHO)
+                - color: emoji do nível
+                - descricao: descrição do nível
+                - acao: ação recomendada
+                - recomendacao: orientação detalhada
+                - urgencia: valor numérico de urgência (1-4)
+                - aviso: mensagem de alerta se confiança baixa
         """
+        # Obtém o nível de emergência do diagnóstico (padrão: AMARELO se não encontrado)
         level_key = cls.DIAGNOSIS_MAPPING.get(diagnosis, 'AMARELO')
         level_info = cls.LEVELS[level_key].copy()
         level_info['level'] = level_key
         
-        # Ajustar recomendação baseado na confiança
+        # Adiciona aviso se a confiança da predição for baixa
         if confidence and confidence < 0.6:
-            level_info['aviso'] = f'⚠️ Baixa confiança ({confidence:.0%}) - CONSULTE UM MÉDICO PARA CONFIRMAÇÃO'
+            level_info['aviso'] = f'Baixa confiança ({confidence:.0%}) - CONSULTE UM MÉDICO PARA CONFIRMAÇÃO'
         
         return level_info
     
     @classmethod
     def get_all_levels(cls):
-        """Retorna todos os níveis disponíveis."""
+        """
+        Retorna todos os níveis de emergência disponíveis no sistema.
+        
+        Retorna:
+            dict: Dicionário com todos os níveis e suas informações
+        """
         return cls.LEVELS
     
     @classmethod
     def add_diagnosis_mapping(cls, diagnosis, level):
-        """Adiciona novo mapeamento diagnóstico -> nível."""
+        """
+        Adiciona ou atualiza o mapeamento de um diagnóstico para um nível de emergência.
+        
+        Parâmetros:
+            diagnosis (str): Nome do diagnóstico/doença
+            level (str): Nível de emergência (VERDE, AMARELO, LARANJA ou VERMELHO)
+        
+        Raises:
+            ValueError: Se o nível especificado não existir
+        """
         if level not in cls.LEVELS:
-            raise ValueError(f'Nível inválido: {level}')
+            raise ValueError(f'Nível inválido: {level}. Use: VERDE, AMARELO, LARANJA ou VERMELHO')
         cls.DIAGNOSIS_MAPPING[diagnosis] = level
 
 

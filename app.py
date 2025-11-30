@@ -1,24 +1,30 @@
+"""
+app.py
+
+Aplicação Streamlit para diagnóstico médico baseado em sintomas.
+Utiliza modelo Random Forest treinado para prever diagnósticos e classificar nível de emergência.
+"""
+
 import streamlit as st
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import plotly.graph_objects as go
 import plotly.express as px
-from classifier import DiagnosticClassifier
 from emergency_level import EmergencyLevel
 import os
 from PIL import Image
 import joblib
 import sys
 
-# Importar a classe do modelo real
+# Importar a classe do modelo
 sys.path.append(os.path.dirname(__file__))
 from train_model_real import DiagnosticClassifierReal
 
 # Configuração da página
 st.set_page_config(
-    page_title="Sistema de Diagnóstico com Nível de Emergência",
-    page_icon="🏥",
+    page_title="Sistema de Diagnóstico Médico",
+    page_icon="hospital",
     layout="wide",
     initial_sidebar_state="expanded"
 )
@@ -65,37 +71,74 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# Função para carregar o modelo
+# Função para carregar o modelo treinado
 @st.cache_resource
 def load_model():
-    model_path = 'data/model_real.pkl'
-    if not os.path.exists(model_path):
-        st.warning("⚠️ Modelo não encontrado! Treinando novo modelo...")
-        classifier = DiagnosticClassifier()
-        df = classifier.create_dataset()
-        os.makedirs('data', exist_ok=True)
-        df.to_csv('data/symptoms_data.csv', index=False)
-        metrics = classifier.train(df)
-        classifier.save(model_path)
-        return classifier
+    """
+    Carrega o modelo Random Forest treinado do disco.
+    Utiliza cache do Streamlit para evitar recarregamento desnecessário.
     
-    # Carregar modelo treinado
+    Retorna:
+        DiagnosticClassifierReal: Modelo treinado
+        
+    Raises:
+        Interrompe execução se modelo não for encontrado
+    """
+    model_path = 'data/model_real.pkl'
+    
+    # Verifica se o modelo existe
+    if not os.path.exists(model_path):
+        st.error("Modelo não encontrado!")
+        st.info("""
+        **Para usar este sistema:**
+        
+        1. Baixe o dataset do Kaggle: https://www.kaggle.com/datasets/behzadhassan/sympscan-symptomps-to-disease
+        2. Coloque o arquivo `Diseases_and_Symptoms_dataset.csv` na pasta `data/`
+        3. Execute: `python train_model_real.py`
+        4. Reinicie o Streamlit
+        """)
+        st.stop()
+    
+    # Carrega o modelo serializado
     try:
         classifier = joblib.load(model_path)
         return classifier
     except Exception as e:
         st.error(f"Erro ao carregar modelo: {e}")
-        st.info("Criando novo modelo...")
-        classifier = DiagnosticClassifier()
-        df = classifier.create_dataset()
-        os.makedirs('data', exist_ok=True)
-        df.to_csv('data/symptoms_data.csv', index=False)
-        metrics = classifier.train(df)
-        classifier.save(model_path)
-        return classifier
+        st.stop()
+
+# Função para carregar descrições de doenças
+@st.cache_data
+def load_disease_descriptions():
+    """
+    Carrega descrições detalhadas das doenças do arquivo CSV.
+    
+    Retorna:
+        dict: Dicionário {doença: descrição}
+    """
+    desc_path = 'data/description.csv'
+    
+    # Verifica se arquivo existe
+    if not os.path.exists(desc_path):
+        return {}
+    
+    try:
+        df = pd.read_csv(desc_path)
+        # Cria dicionário com primeira coluna como chave e segunda como valor
+        descriptions = dict(zip(df.iloc[:, 0], df.iloc[:, 1]))
+        return descriptions
+    except Exception as e:
+        print(f"Erro ao carregar descrições: {e}")
+        return {}
 
 # Função para renderizar box de emergência
 def render_emergency_box(level_info):
+    """
+    Renderiza visualmente o nível de emergência do diagnóstico.
+    
+    Parâmetros:
+        level_info (dict): Informações do nível de emergência
+    """
     level = level_info['level']
     html_class = f"emergency-box-{level.lower()}"
     
@@ -109,16 +152,17 @@ def render_emergency_box(level_info):
     """
     st.markdown(html_content, unsafe_allow_html=True)
 
-# Carregar modelo
+# Carregar modelo e descrições
 classifier = load_model()
+disease_descriptions = load_disease_descriptions()
 
 # Layout da aplicação
-st.title("🏥 Sistema de Diagnóstico Baseado em Sintomas")
+st.title("Sistema de Diagnóstico Baseado em Sintomas")
 st.markdown("---")
 
 # Sidebar
 with st.sidebar:
-    st.header("📊 Informações do Projeto")
+    st.header("Informações do Projeto")
     st.info(f"""
     **Objetivo:** Diagnóstico de doenças/condições baseado em sintomas
     
@@ -129,7 +173,7 @@ with st.sidebar:
     **Diagnósticos:** {len(classifier.diagnoses)} condições diferentes
     """)
     
-    st.header("⚠️ Aviso Importante")
+    st.header("Aviso Importante")
     st.warning("""
     Este é um sistema educacional de **DEMONSTRAÇÃO**. 
     
@@ -139,7 +183,7 @@ with st.sidebar:
     """)
 
 # Abas de navegação
-tab1, tab2, tab3, tab4 = st.tabs(["🔍 Diagnóstico", "📈 Métricas", "ℹ️ Informações", "📋 Dados"])
+tab1, tab2, tab3, tab4 = st.tabs(["Diagnóstico", "Métricas", "Informações", "Dados"])
 
 # ========================= ABA 1: DIAGNÓSTICO =========================
 with tab1:
@@ -194,29 +238,34 @@ with tab1:
         result = st.session_state.last_diagnosis
         
         st.markdown("---")
-        st.header("📋 Resultado do Diagnóstico")
+        st.header("Resultado do Diagnóstico")
         
-        # Diagnóstico principal
+        # Diagnóstico principal e confiança
         col1, col2 = st.columns([2, 1])
         
         with col1:
-            st.markdown(f"### 🔬 Diagnóstico Previsto")
+            st.markdown(f"### Diagnóstico Previsto")
             st.markdown(f"**{result['diagnosis']}**")
+            
+            # Exibir descrição da doença se disponível
+            if result['diagnosis'] in disease_descriptions:
+                st.markdown("#### Sobre esta condição:")
+                st.info(disease_descriptions[result['diagnosis']])
         
         with col2:
-            st.markdown(f"### 📊 Confiança")
-            st.metric("", f"{result['confidence']:.0%}")
+            st.markdown(f"### Confiança")
+            st.metric("Nível de Confiança", f"{result['confidence']:.0%}")
         
         st.markdown("---")
         
-        # Nível de emergência (destaque)
-        st.markdown("### ⚠️ Nível de Emergência")
+        # Nível de emergência
+        st.markdown("### Nível de Emergência")
         render_emergency_box(result['emergency_level'])
         
         st.markdown("---")
         
         # Gráfico de probabilidades
-        st.markdown("### 📊 Probabilidades por Diagnóstico")
+        st.markdown("### Probabilidades por Diagnóstico")
         
         probs_df = pd.DataFrame({
             'Diagnóstico': list(result['probabilities'].keys()),
@@ -236,7 +285,7 @@ with tab1:
         st.plotly_chart(fig, use_container_width=True)
         
         # Resumo de sintomas selecionados
-        st.markdown("### ✅ Sintomas Informados")
+        st.markdown("### Sintomas Informados")
         sintomas_sim = [s for s, v in result['symptoms'].items() if v]
         if sintomas_sim:
             cols = st.columns(3)
@@ -245,10 +294,10 @@ with tab1:
 
 # ========================= ABA 2: MÉTRICAS =========================
 with tab2:
-    st.header("📈 Métricas do Modelo")
+    st.header("Métricas do Modelo")
     
     # Exibir informações básicas do modelo
-    st.markdown("### 📊 Informações do Modelo")
+    st.markdown("### Informações do Modelo")
     col1, col2, col3 = st.columns(3)
     col1.metric("Sintomas", len(classifier.symptoms_list))
     col2.metric("Doenças", len(classifier.diagnoses))
@@ -291,7 +340,7 @@ with tab2:
         st.markdown("---")
         
         # Feature Importance
-        st.markdown("### 🎯 Importância das Features (Sintomas)")
+        st.markdown("### Importância das Features (Sintomas)")
         
         feature_importance = classifier.get_feature_importance()
         feature_df = pd.DataFrame({
@@ -313,7 +362,7 @@ with tab2:
         st.markdown("---")
         
         # Distribuição de diagnósticos
-        st.markdown("### 📊 Distribuição de Diagnósticos no Dataset")
+        st.markdown("### Distribuição de Diagnósticos no Dataset")
         
         diag_counts = df.iloc[:, 0].value_counts()
         fig = px.pie(
@@ -328,12 +377,12 @@ with tab2:
 
 # ========================= ABA 3: INFORMAÇÕES =========================
 with tab3:
-    st.header("ℹ️ Informações do Projeto")
+    st.header("Informações sobre o Projeto")
     
     col1, col2 = st.columns(2)
     
     with col1:
-        st.markdown("### 🎯 Objetivos")
+        st.markdown("### Objetivos")
         st.markdown("""
         - Diagnosticar condições médicas baseado em sintomas
         - Classificar nível de emergência
@@ -350,7 +399,7 @@ with tab3:
         """)
     
     with col2:
-        st.markdown("### 📊 Dataset")
+        st.markdown("### Dataset")
         st.markdown(f"""
         - **Tamanho:** {len(classifier.diagnoses) * 900:,} amostras
         - **Features:** {len(classifier.symptoms_list)} sintomas (binários)
@@ -368,7 +417,7 @@ with tab3:
     
     st.markdown("---")
     
-    st.markdown("### 🏥 Aviso de Saúde")
+    st.markdown("### Aviso de Saúde")
     st.warning("""
     **ESTE SISTEMA É APENAS PARA FINS EDUCACIONAIS**
     
@@ -378,7 +427,7 @@ with tab3:
     - Consulte sempre um médico qualificado
     """)
     
-    st.markdown("### 👨‍💻 Sobre a Implementação")
+    st.markdown("### Sobre a Implementação")
     st.markdown("""
     **Stack Tecnológico:**
     - Python 3.8+
@@ -395,13 +444,13 @@ with tab3:
 
 # ========================= ABA 4: DADOS =========================
 with tab4:
-    st.header("📋 Dados do Modelo")
+    st.header("Dados do Modelo")
     
     dataset_path = 'data/Diseases_and_Symptoms_dataset.csv'
     if os.path.exists(dataset_path):
         df = pd.read_csv(dataset_path)
         
-        st.markdown("### 📊 Dataset Completo")
+        st.markdown("### Dataset Completo")
         
         # Nome da primeira coluna (diagnóstico)
         diagnosis_col = df.columns[0]
@@ -421,7 +470,7 @@ with tab4:
         
         # Estatísticas
         st.markdown("---")
-        st.markdown("### 📊 Estatísticas")
+        st.markdown("### Estatísticas")
         
         col1, col2, col3 = st.columns(3)
         col1.metric("Total de Amostras", len(df))
