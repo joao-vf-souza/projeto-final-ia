@@ -101,16 +101,18 @@ class DiagnosticClassifierReal:
         y_test_encoded = self.label_encoder.transform(y_test)
         
         # Treinar modelo
-        print("   - Treinando Random Forest (200 árvores)...")
+        print("   - Treinando Random Forest (500 árvores com otimizações)...")
         self.model = RandomForestClassifier(
-            n_estimators=200,
-            max_depth=30,
+            n_estimators=500,
+            max_depth=50,
             min_samples_split=2,
             min_samples_leaf=1,
             max_features='sqrt',
             n_jobs=-1,
             random_state=42,
-            verbose=0
+            verbose=0,
+            criterion='gini',
+            class_weight='balanced'
         )
         
         self.model.fit(X_train, y_train_encoded)

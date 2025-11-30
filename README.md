@@ -17,10 +17,10 @@ Este sistema utiliza **Random Forest Classifier** para prever possíveis diagnó
 
 ## Desempenho do Modelo
 
-- **Acurácia de Treino:** 92.69%
-- **Acurácia de Teste:** 86.34%
-- **Precisão:** 87.70%
-- **Recall:** 86.34%
+- **Acurácia de Treino:** 94.76%
+- **Acurácia de Teste:** 87.23%
+- **Precisão:** 87.82%
+- **Recall:** 87.23%
 - **Dataset:** 96.088 amostras
 - **Features:** 230 sintomas
 - **Classes:** 100 diagnósticos
@@ -29,7 +29,8 @@ Este sistema utiliza **Random Forest Classifier** para prever possíveis diagnó
 
 ### Pré-requisitos
 
-- Python 3.9 ou superior (recomendado não usar python 3.14)
+- **Python 3.11** (recomendado) ou 3.9 - 3.12
+  - ⚠️ **Não use Python 3.14+** (incompatibilidade com algumas dependências)
 - pip (gerenciador de pacotes Python)
 
 ### Instalação
@@ -100,22 +101,23 @@ projeto-final-ia/
 
 ## Tecnologias Utilizadas
 
-- **Python 3.13**
-- **Scikit-learn** - Machine Learning
-- **Streamlit** - Interface Web
-- **Pandas** - Manipulação de dados
-- **NumPy** - Computação numérica
-- **Plotly** - Visualizações interativas
-- **Matplotlib** - Gráficos estáticos
-- **Joblib** - Serialização do modelo
+- **Python 3.11** (recomendado)
+- **Scikit-learn 1.7.2** - Machine Learning
+- **Streamlit 1.28.1** - Interface Web
+- **Pandas 2.1.1** - Manipulação de dados
+- **NumPy 1.26.4** - Computação numérica
+- **Plotly 5.17.0** - Visualizações interativas
+- **Matplotlib 3.8.1** - Gráficos estáticos
+- **Joblib 1.3.2** - Serialização do modelo
 
 ## Metodologia
 
 ### Algoritmo: Random Forest Classifier
-- **200 árvores de decisão**
-- **Profundidade máxima: 30**
+- **500 árvores de decisão**
+- **Profundidade máxima: 50**
 - **Estratégia de features:** sqrt
 - **Divisão:** 80% treino / 20% teste
+- **Balanceamento de classes:** ativado
 
 ### Pipeline de Treinamento
 1. Carregamento do dataset

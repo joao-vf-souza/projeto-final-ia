@@ -189,6 +189,9 @@ tab1, tab2, tab3, tab4 = st.tabs(["Diagnóstico", "Métricas", "Informações", 
 with tab1:
     st.header("Selecione os Sintomas")
     
+    # Dica para melhorar confiança
+    st.info("💡 **Dica:** Quanto mais sintomas você selecionar, maior será a confiança do diagnóstico. Marque todos os sintomas que você está sentindo.")
+    
     # Grid de sintomas
     col1, col2, col3 = st.columns(3)
     
@@ -248,13 +251,28 @@ with tab1:
             st.markdown(f"**{result['diagnosis']}**")
             
             # Exibir descrição da doença se disponível
-            if result['diagnosis'] in disease_descriptions:
-                st.markdown("#### Sobre esta condição:")
-                st.info(disease_descriptions[result['diagnosis']])
+            diagnosis_clean = result['diagnosis'].strip().lower()
+            description_found = None
+            
+            # Tentar encontrar descrição (case-insensitive)
+            for disease_name, desc in disease_descriptions.items():
+                if disease_name.strip().lower() == diagnosis_clean:
+                    description_found = desc
+                    break
+            
+            if description_found:
+                st.markdown("#### 📋 Sobre esta condição:")
+                st.info(description_found)
         
         with col2:
             st.markdown(f"### Confiança")
             st.metric("Nível de Confiança", f"{result['confidence']:.0%}")
+            
+            # Mostrar top 3 diagnósticos alternativos
+            st.markdown("#### Top 3 Diagnósticos:")
+            sorted_probs = sorted(result['probabilities'].items(), key=lambda x: x[1], reverse=True)
+            for i, (disease, prob) in enumerate(sorted_probs[:3], 1):
+                st.write(f"{i}. **{disease}**: {prob:.1%}")
         
         st.markdown("---")
         
@@ -390,7 +408,7 @@ with tab3:
         - Demonstrar aplicação de Machine Learning
         """)
         
-        st.markdown("### 🏆 Técnicas Utilizadas")
+        st.markdown("### Técnicas Utilizadas")
         st.markdown("""
         - **Algoritmo:** Random Forest Classifier
         - **Tipo:** Classificação Multi-classe
@@ -407,7 +425,7 @@ with tab3:
         - **Fonte:** SymScan - Kaggle Dataset
         """)
         
-        st.markdown("### 📝 Níveis de Emergência")
+        st.markdown("### Níveis de Emergência")
         st.markdown("""
         - **🟢 Verde:** Emergência baixa (consulta em dias)
         - **🟡 Amarelo:** Urgência (consulta em poucas horas)
