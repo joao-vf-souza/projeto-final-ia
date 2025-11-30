@@ -321,77 +321,57 @@ with tab2:
     col2.metric("Doenças", len(classifier.diagnoses))
     col3.metric("Tipo", "Random Forest")
     
-    # Carregar dados para calcular métricas
+    # Usar métricas salvas no modelo (do treinamento original)
+    if hasattr(classifier, 'metrics') and classifier.metrics:
+        st.markdown("### Desempenho do Modelo")
+        col1, col2, col3, col4 = st.columns(4)
+        col1.metric("Acurácia (Treino)", f"{classifier.metrics['accuracy_train']:.1%}")
+        col2.metric("Acurácia (Teste)", f"{classifier.metrics['accuracy_test']:.1%}")
+        col3.metric("Precisão", f"{classifier.metrics['precision']:.1%}")
+        col4.metric("Recall", f"{classifier.metrics['recall']:.1%}")
+    else:
+        st.info("⚠️ Métricas não disponíveis. Retreine o modelo com `python train_model_real.py`")
+    
+    st.markdown("---")
+    
+    # Feature Importance
+    st.markdown("### Importância das Features (Sintomas)")
+    
+    feature_importance = classifier.get_feature_importance()
+    feature_df = pd.DataFrame({
+        'Sintoma': list(feature_importance.keys()),
+        'Importância': list(feature_importance.values())
+    }).sort_values('Importância', ascending=False).head(20)
+    
+    fig = px.bar(
+        feature_df,
+        x='Importância',
+        y='Sintoma',
+        orientation='h',
+        color='Importância',
+        color_continuous_scale='Viridis',
+        title='Top 20 Sintomas Mais Importantes'
+    )
+    fig.update_layout(height=600)
+    st.plotly_chart(fig, use_container_width=True)
+    
+    st.markdown("---")
+    
+    # Distribuição de diagnósticos
     dataset_path = 'data/Diseases_and_Symptoms_dataset.csv'
     if os.path.exists(dataset_path):
-        df = pd.read_csv(dataset_path)
-        
-        # Dividir dados
-        from sklearn.model_selection import train_test_split
-        X = df[classifier.symptoms_list].values
-        y = df.iloc[:, 0].values
-        
-        X_train, X_test, y_train, y_test = train_test_split(
-            X, y, test_size=0.2, random_state=42
-        )
-        
-        # Predições
-        y_pred_train = classifier.label_encoder.inverse_transform(
-            classifier.model.predict(X_train)
-        )
-        y_pred_test = classifier.label_encoder.inverse_transform(
-            classifier.model.predict(X_test)
-        )
-        
-        # Acurácia
-        from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
-        
-        acc_train = accuracy_score(y_train, y_pred_train)
-        acc_test = accuracy_score(y_test, y_pred_test)
-        
-        col1, col2, col3, col4 = st.columns(4)
-        col1.metric("Acurácia (Treino)", f"{acc_train:.1%}")
-        col2.metric("Acurácia (Teste)", f"{acc_test:.1%}")
-        col3.metric("Precisão", f"{precision_score(y_test, y_pred_test, average='weighted'):.1%}")
-        col4.metric("Recall", f"{recall_score(y_test, y_pred_test, average='weighted'):.1%}")
-        
-        st.markdown("---")
-        
-        # Feature Importance
-        st.markdown("### Importância das Features (Sintomas)")
-        
-        feature_importance = classifier.get_feature_importance()
-        feature_df = pd.DataFrame({
-            'Sintoma': list(feature_importance.keys()),
-            'Importância': list(feature_importance.values())
-        }).sort_values('Importância', ascending=False)
-        
-        fig = px.bar(
-            feature_df,
-            x='Importância',
-            y='Sintoma',
-            orientation='h',
-            color='Importância',
-            color_continuous_scale='Viridis'
-        )
-        fig.update_layout(height=500)
-        st.plotly_chart(fig, use_container_width=True)
-        
-        st.markdown("---")
-        
-        # Distribuição de diagnósticos
         st.markdown("### Distribuição de Diagnósticos no Dataset")
-        
-        diag_counts = df.iloc[:, 0].value_counts()
-        fig = px.pie(
-            values=diag_counts.values,
-            names=diag_counts.index,
-            title='Distribuição de Diagnósticos',
-            hole=0.4
+        df = pd.read_csv(dataset_path)
+        diag_counts = df.iloc[:, 0].value_counts().head(20)
+        fig = px.bar(
+            x=diag_counts.values,
+            y=diag_counts.index,
+            orientation='h',
+            title='Top 20 Diagnósticos Mais Frequentes',
+            labels={'x': 'Número de Amostras', 'y': 'Diagnóstico'}
         )
+        fig.update_layout(height=600)
         st.plotly_chart(fig, use_container_width=True)
-    else:
-        st.info("Dataset não encontrado.")
 
 # ========================= ABA 3: INFORMAÇÕES =========================
 with tab3:

@@ -44,6 +44,7 @@ class DiagnosticClassifierReal:
         self.symptoms_list = None
         self.diagnoses = None
         self.feature_importance = None
+        self.metrics = None  # Armazena as métricas de treinamento
     
     def load_real_dataset(self, csv_path):
         """
@@ -83,7 +84,7 @@ class DiagnosticClassifierReal:
         """
         Treina modelo Random Forest com dataset real
         """
-        print("\n🤖 Iniciando treinamento...")
+        print("\nIniciando treinamento...")
         
         X = df[self.symptoms_list].values
         y = df.iloc[:, 0].values  # Primeira coluna é o diagnóstico
@@ -118,7 +119,7 @@ class DiagnosticClassifierReal:
         self.model.fit(X_train, y_train_encoded)
         
         # Prever e calcular métricas
-        print("\n📊 Calculando métricas...")
+        print("\nCalculando métricas...")
         y_pred_train = self.model.predict(X_train)
         y_pred_test = self.model.predict(X_test)
         
@@ -132,7 +133,7 @@ class DiagnosticClassifierReal:
             zip(self.symptoms_list, self.model.feature_importances_)
         )
         
-        metrics = {
+        self.metrics = {
             'accuracy_train': acc_train,
             'accuracy_test': acc_test,
             'precision': precision,
@@ -142,7 +143,7 @@ class DiagnosticClassifierReal:
             'n_diseases': len(self.diagnoses)
         }
         
-        return metrics
+        return self.metrics
     
     def get_feature_importance(self):
         """Retorna a importância de cada feature/sintoma"""
@@ -193,15 +194,15 @@ class DiagnosticClassifierReal:
 
 def main():
     print("=" * 80)
-    print("🏥 TREINANDO MODELO COM DATASET REAL SYMPSCAN")
+    print("TREINANDO MODELO COM DATASET REAL SYMPSCAN")
     print("=" * 80)
     
     # Verificar se arquivo existe
     dataset_path = 'data/Diseases_and_Symptoms_dataset.csv'
     
     if not os.path.exists(dataset_path):
-        print(f"\n❌ ERRO: Dataset não encontrado em {dataset_path}")
-        print("\n📋 O que fazer:")
+        print(f"\nERRO: Dataset não encontrado em {dataset_path}")
+        print("\nO que fazer:")
         print("1. Acesse: https://www.kaggle.com/datasets/behzadhassan/sympscan-symptomps-to-disease")
         print("2. Clique em 'Download'")
         print("3. Descompacte o arquivo")
@@ -221,20 +222,20 @@ def main():
         
         # Exibir resultados
         print("\n" + "=" * 80)
-        print("✅ RESULTADOS DO TREINAMENTO")
+        print("RESULTADOS DO TREINAMENTO")
         print("=" * 80)
-        print(f"\n📊 Métricas:")
+        print(f"\nMétricas:")
         print(f"   Acurácia (Treino): {metrics['accuracy_train']:.2%}")
         print(f"   Acurácia (Teste):  {metrics['accuracy_test']:.2%}")
         print(f"   Precisão:          {metrics['precision']:.2%}")
         print(f"   Recall:            {metrics['recall']:.2%}")
         
-        print(f"\n📈 Dataset:")
+        print(f"\nDataset:")
         print(f"   Amostras:          {metrics['n_samples']:,}")
         print(f"   Sintomas:          {metrics['n_symptoms']}")
         print(f"   Doenças:           {metrics['n_diseases']}")
         
-        print(f"\n🎯 Top 10 Sintomas Mais Importantes:")
+        print(f"\nTop 10 Sintomas Mais Importantes:")
         top_features = sorted(
             classifier.feature_importance.items(),
             key=lambda x: x[1],
@@ -246,15 +247,15 @@ def main():
             print(f"   {i:2d}. {symptom:30s} {bar} {importance:.1%}")
         
         # Salvar modelo
-        print("\n💾 Salvando modelo...")
+        print("\nSalvando modelo...")
         classifier.save('data/model_real.pkl')
         
         # Informações finais
         print("\n" + "=" * 80)
-        print("🚀 PRÓXIMOS PASSOS")
+        print("PRÓXIMOS PASSOS")
         print("=" * 80)
         print("\n1. Execute o Streamlit:")
-        print("   streamlit run app.py")
+        print("   python -m streamlit run app.py")
         print("\n2. Abra no navegador:")
         print("   http://localhost:8501")
         print("\n3. Teste o sistema com o modelo treinado!")
