@@ -29,7 +29,7 @@ Este sistema utiliza **Random Forest Classifier** para prever possíveis diagnó
 
 ### Pré-requisitos
 
-- Python 3.9 ou superior
+- Python 3.9 ou superior (recomendado não usar python 3.14)
 - pip (gerenciador de pacotes Python)
 
 ### Instalação
