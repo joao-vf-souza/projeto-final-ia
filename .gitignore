@@ -44,9 +44,9 @@ env/
 .env
 .env.local
 
-# Models - Arquivos muito grandes para o GitHub
-data/model_real.pkl
-data/model.pkl
+# Models - Comentado para tentar subir o modelo
+# data/model_real.pkl
+# data/model.pkl
 
 # Large datasets - Baixar do Kaggle
 data/Diseases_and_Symptoms_dataset.csv
