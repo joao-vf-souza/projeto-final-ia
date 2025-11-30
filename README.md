@@ -1,186 +1,222 @@
-# Sistema de Diagnóstico Médico com IA
+# 🏥 Sistema de Diagnóstico Médico com Inteligência Artificial
 
-Sistema inteligente de diagnóstico baseado em sintomas usando Machine Learning. Desenvolvido como trabalho final do curso de Inteligência Artificial.
+[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://joao-vf-souza-projeto-final-ia-app-6ysln1.streamlit.app/)
+[![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
+[![scikit-learn](https://img.shields.io/badge/scikit--learn-1.5.2-orange.svg)](https://scikit-learn.org/)
 
-## Sobre o Projeto
+> Sistema inteligente de diagnóstico médico preliminar baseado em Machine Learning, desenvolvido como projeto final do curso de Inteligência Artificial - Bacharelado em Sistemas de Informação.
 
-Este sistema utiliza **Random Forest Classifier** para prever possíveis diagnósticos médicos baseado em sintomas informados pelo usuário. O modelo foi treinado com o dataset **SymScan** do Kaggle, contendo 96.088 amostras com 230 sintomas diferentes e 100 doenças.
+## 🚀 Demonstração
 
-### Funcionalidades
+**Acesse a aplicação online:** [https://joao-vf-souza-projeto-final-ia-app-6ysln1.streamlit.app/](https://joao-vf-souza-projeto-final-ia-app-6ysln1.streamlit.app/)
 
-- ✅ Diagnóstico baseado em sintomas selecionados
-- ✅ Classificação de nível de emergência (Verde, Amarelo, Laranja, Vermelho)
-- ✅ Visualização de confiança e probabilidades
-- ✅ Interface web interativa com Streamlit
-- ✅ Análise de importância de sintomas
-- ✅ Métricas e gráficos de desempenho do modelo
+![Sistema em Ação](https://img.shields.io/badge/Status-Online-success)
 
-## Desempenho do Modelo
+## 📋 Sobre o Projeto
 
-- **Acurácia de Treino:** 88.90%
-- **Acurácia de Teste:** 89.22%
-- **Precisão:** 91.30%
-- **Recall:** 89.22%
-- **Dataset:** 96.088 amostras
-- **Features:** 230 sintomas
-- **Classes:** 100 diagnósticos
-- **Generalização:** Excelente (gap negativo de -0.32%)
+Este projeto implementa um sistema automatizado de diagnóstico médico que utiliza algoritmos de Machine Learning para prever diagnósticos a partir de sintomas reportados pelo usuário. O sistema foi desenvolvido como trabalho final da disciplina de Inteligência Artificial e demonstra a aplicação prática de técnicas de classificação multi-classe em um problema real do domínio da saúde.
 
-## Como Executar
+### 🎯 Principais Funcionalidades
+
+- **Diagnóstico Inteligente**: Classifica 100 diferentes condições médicas com base em 230 sintomas
+- **Sistema de Emergência**: Classifica automaticamente o nível de urgência (Verde, Amarelo, Laranja, Vermelho)
+- **Interface Interativa**: Aplicação web responsiva desenvolvida com Streamlit
+- **Análise de Confiança**: Exibe probabilidades e alternativas diagnósticas
+- **Visualizações**: Gráficos interativos de importância de features e distribuição de dados
+- **Métricas Transparentes**: Acurácia de 89.22%, Precisão de 91.30%, Recall de 89.22%
+
+## 🧠 Tecnologia e Metodologia
+
+### Algoritmo Utilizado
+
+**Random Forest Classifier** com hiperparâmetros otimizados:
+- 300 árvores de decisão
+- Profundidade máxima de 40
+- Técnicas de regularização (pruning, bagging)
+- Balanceamento automático de classes
+
+### Dataset
+
+- **Nome**: SymScan - Symptoms to Disease Dataset
+- **Fonte**: [Kaggle](https://www.kaggle.com/datasets/behzadhassan/sympscan-symptomps-to-disease)
+- **Amostras**: 96.088 registros
+- **Features**: 230 sintomas binários
+- **Classes**: 100 diagnósticos diferentes
+- **Distribuição**: Balanceada (~960 amostras/classe)
+
+### Métricas de Desempenho
+
+| Métrica | Treino | Teste |
+|---------|--------|-------|
+| Acurácia | 88.90% | **89.22%** |
+| Precisão | - | **91.30%** |
+| Recall | - | **89.22%** |
+
+> ✅ **Destaque**: Acurácia de teste superior à de treino, indicando excelente capacidade de generalização sem overfitting.
+
+## 🛠️ Stack Tecnológica
+
+- **Linguagem**: Python 3.11+
+- **Machine Learning**: scikit-learn 1.5.2
+- **Interface Web**: Streamlit 1.28.1
+- **Manipulação de Dados**: Pandas 2.2.3, NumPy 1.26.4
+- **Visualizações**: Plotly 5.17.0, Matplotlib 3.8.1
+- **Serialização**: Joblib 1.3.2
+
+## 📦 Instalação e Uso
 
 ### Pré-requisitos
 
-- **Python 3.11** (recomendado) ou 3.9 - 3.12
-  - ⚠️ **Não use Python 3.14+** (incompatibilidade com algumas dependências)
+- Python 3.11 ou superior
 - pip (gerenciador de pacotes Python)
 
-### Instalação
+### Instalação Local
 
-1. Clone o repositório:
 ```bash
-git clone https://github.com/seu-usuario/projeto-final-ia.git
+# Clone o repositório
+git clone https://github.com/joao-vf-souza/projeto-final-ia.git
 cd projeto-final-ia
-```
 
-2. Instale as dependências:
-```bash
+# Instale as dependências
 pip install -r requirements.txt
-```
 
-3. **IMPORTANTE:** Baixe o dataset e treine o modelo:
-   
-   **Passo 3.1 - Baixar o Dataset:**
-   - Acesse: [SymScan Dataset no Kaggle](https://www.kaggle.com/datasets/behzadhassan/sympscan-symptomps-to-disease)
-   - Faça login no Kaggle (crie uma conta se necessário)
-   - Clique em **"Download"** (arquivo ZIP ~45 MB)
-   - Extraia o arquivo `Diseases_and_Symptoms_dataset.csv`
-   - Coloque na pasta `data/` do projeto
-   
-   **Passo 3.2 - Treinar o Modelo:**
-   ```bash
-   python train_model_real.py
-   ```
-   
-   Este processo irá:
-   - Carregar o dataset (96.088 amostras)
-   - Treinar o Random Forest (pode levar alguns minutos)
-   - Salvar o modelo treinado em `data/model_real.pkl`
-   - Exibir métricas de desempenho
-
-4. Execute a aplicação:
-```bash
+# Execute a aplicação
 streamlit run app.py
 ```
-ou
-```bash
-python -m streamlit run app.py
-```
 
-5. Acesse no navegador:
-```
-http://localhost:8501
-```
+A aplicação estará disponível em `http://localhost:8501`
 
-## Estrutura do Projeto
-
-```
-projeto-final-ia/
-│
-├── app.py                          # Interface Streamlit
-├── train_model_real.py             # Script de treinamento do modelo
-├── emergency_level.py              # Sistema de níveis de emergência
-├── requirements.txt                # Dependências do projeto
-├── README.md                       # Documentação
-├── .gitignore                      # Arquivos ignorados pelo Git
-│
-└── data/
-    ├── Diseases_and_Symptoms_dataset.csv  # Dataset principal (baixar do Kaggle)
-    └── model_real.pkl                     # Modelo treinado (gerado após treino)
-```
-
-> **⚠️ Nota:** Os arquivos `model_real.pkl` e `Diseases_and_Symptoms_dataset.csv` não estão incluídos no repositório devido ao tamanho (>100MB). Você deve baixar o dataset do Kaggle e treinar o modelo localmente.
-
-## Tecnologias Utilizadas
-
-- **Python 3.11** (recomendado)
-- **Scikit-learn 1.7.2** - Machine Learning
-- **Streamlit 1.28.1** - Interface Web
-- **Pandas 2.1.1** - Manipulação de dados
-- **NumPy 1.26.4** - Computação numérica
-- **Plotly 5.17.0** - Visualizações interativas
-- **Matplotlib 3.8.1** - Gráficos estáticos
-- **Joblib 1.3.2** - Serialização do modelo
-
-## Metodologia
-
-### Algoritmo: Random Forest Classifier
-- **500 árvores de decisão**
-- **Profundidade máxima: 50**
-- **Estratégia de features:** sqrt
-- **Divisão:** 80% treino / 20% teste
-- **Balanceamento de classes:** ativado
-
-### Pipeline de Treinamento
-1. Carregamento do dataset
-2. Pré-processamento e codificação de labels
-3. Divisão treino/teste com estratificação
-4. Treinamento do Random Forest
-5. Avaliação de métricas
-6. Serialização do modelo
-
-## Níveis de Emergência
-
-O sistema classifica automaticamente o diagnóstico em 4 níveis:
-
-- 🟢 **Verde (Baixa):** Consultar em dias - posto de saúde
-- 🟡 **Amarelo (Urgência):** Consultar em horas - UPA
-- 🟠 **Laranja (Emergência):** Procurar pronto-socorro hoje
-- 🔴 **Vermelho (Crítica):** Ligar 192 imediatamente
-
-## Aviso Importante
-
-**ESTE SISTEMA É APENAS PARA FINS EDUCACIONAIS**
-
-- ❌ Não substitui consulta médica profissional
-- ❌ Não deve ser usado para decisões de tratamento
-- ✅ Em caso de emergência, ligue **192** ou procure o pronto-socorro
-- ✅ Sempre consulte um médico qualificado
-
-## Testes
-
-Para testar o modelo após o treinamento:
+### Treinamento do Modelo
 
 ```bash
+# Para re-treinar o modelo (opcional)
 python train_model_real.py
 ```
 
-O script irá:
-1. Carregar o dataset
-2. Treinar o modelo
-3. Exibir métricas de desempenho
-4. Mostrar os 10 sintomas mais importantes
-5. Salvar o modelo treinado
+## 📁 Estrutura do Projeto
 
-## Melhorias Futuras
+```
+projeto-final-ia/
+├── app.py                      # Interface Streamlit
+├── train_model_real.py         # Script de treinamento do modelo
+├── emergency_level.py          # Sistema de níveis de emergência
+├── requirements.txt            # Dependências do projeto
+├── README.md                   # Este arquivo
+├── DOCUMENTACAO.pdf           # Documentação técnica completa (LaTeX)
+├── .gitignore                 # Arquivos ignorados pelo Git
+└── data/
+    ├── Diseases_and_Symptoms_dataset.csv  # Dataset principal
+    ├── description.csv                     # Descrições de doenças
+    └── model_real.pkl                      # Modelo treinado serializado
+```
 
-- [ ] Adicionar mais datasets médicos
-- [ ] Implementar rede neural profunda
-- [ ] Integração com APIs de saúde
-- [ ] Sistema de histórico de diagnósticos
-- [ ] Multilíngue (EN, ES, PT)
-- [ ] App mobile (Flutter/React Native)
-- [ ] Explicabilidade com SHAP/LIME
+## 🎓 Contexto Acadêmico
 
-## Autor
+**Instituição**: UNESP - Universidade Estadual Paulista  
+**Campus**: Bauru  
+**Curso**: Bacharelado em Sistemas de Informação  
+**Disciplina**: Inteligência Artificial  
+**Professor**: Clayton Pereira  
+**Data de Entrega**: 01/12/2025  
 
-Desenvolvido como trabalho final do curso de Inteligência Artificial.
+## 📊 Funcionalidades da Interface
 
-## Agradecimentos
+### 1️⃣ Aba Diagnóstico
+- Seleção de sintomas via checkboxes
+- Diagnóstico em tempo real
+- Nível de confiança da predição
+- Top 3 diagnósticos alternativos
+- Classificação de emergência com recomendações
+- Gráfico de probabilidades
 
-- Dataset: [SymScan - Kaggle](https://www.kaggle.com/datasets/behzadhassan/sympscan-symptomps-to-disease)
-- Comunidade Streamlit
-- Scikit-learn Documentation
+### 2️⃣ Aba Métricas
+- Informações do modelo treinado
+- Métricas de desempenho detalhadas
+- Top 20 sintomas mais importantes
+- Distribuição de diagnósticos no dataset
+
+### 3️⃣ Aba Informações
+- Documentação do modelo e metodologia
+- Detalhes do dataset utilizado
+- Avisos de uso educacional
+- Stack tecnológica completa
+
+### 4️⃣ Aba Dados
+- Visualização do dataset completo
+- Filtros por diagnóstico
+- Estatísticas descritivas
+- Download em formato CSV
+
+## 🚨 Sistema de Níveis de Emergência
+
+O sistema classifica automaticamente a urgência do diagnóstico:
+
+| Nível | Cor | Descrição | Recomendação |
+|-------|-----|-----------|--------------|
+| 🟢 **Verde** | Baixo | Emergência Baixa | Agendar consulta em dias |
+| 🟡 **Amarelo** | Moderado | Urgência | Procurar UPA em horas |
+| 🟠 **Laranja** | Alto | Emergência | Procurar pronto-socorro hoje |
+| 🔴 **Vermelho** | Crítico | Risco de Vida | Ligar 192 (SAMU) imediatamente |
+
+## ⚠️ Avisos Importantes
+
+> **⚠️ ATENÇÃO**: Este sistema foi desenvolvido exclusivamente para fins educacionais e demonstração acadêmica.
+
+- ❌ **NÃO** substitui consulta médica profissional
+- ❌ **NÃO** deve ser usado para decisões médicas reais
+- ✅ Ferramenta de aprendizado sobre Machine Learning aplicado à saúde
+- ✅ Em caso de emergência real, procure atendimento médico qualificado
+
+## 📚 Documentação Completa
+
+A documentação técnica completa em formato LaTeX está disponível no arquivo `DOCUMENTACAO.pdf`, contendo:
+
+- Fundamentação teórica detalhada
+- Metodologia completa de desenvolvimento
+- Análise aprofundada de hiperparâmetros
+- Arquitetura detalhada do sistema
+- Implementação técnica
+- Limitações e trabalhos futuros
+- Aspectos éticos e legais
+- Referências bibliográficas
+
+## 🔮 Trabalhos Futuros
+
+- Implementação multilíngue (português)
+- Exploração de Deep Learning
+- Incorporação de features adicionais (idade, sexo, histórico)
+- API REST para integração com outros sistemas
+- Aplicativo mobile
+- Explicabilidade com SHAP/LIME
+- Histórico de consultas por usuário
+
+## 👤 Autores
+
+**João Victor Fernandes Souza**
+**Vinicius Henrique de Oliveira Franzote**
+
+- UNESP Bauru - Bacharelado em Sistemas de Informação
+
+## 🤝 Contribuições
+
+Contribuições, issues e feature requests são bem-vindos! Sinta-se livre para abrir uma issue ou pull request.
+
+## 🙏 Agradecimentos
+
+- Prof. Clayton Pereira pela orientação na disciplina
+- Comunidade Kaggle pelo dataset de qualidade
+- Comunidade open-source pelas bibliotecas utilizadas
 
 ---
 
-**⭐ Se este projeto foi útil, considere dar uma estrela no GitHub!**
+<div align="center">
+
+**Desenvolvido com ❤️ para aprendizado e demonstração acadêmica**
+
+[![UNESP](https://img.shields.io/badge/UNESP-Bauru-blue)](https://www.fc.unesp.br/)
+[![Made with Python](https://img.shields.io/badge/Made%20with-Python-1f425f.svg)](https://www.python.org/)
+[![Streamlit](https://img.shields.io/badge/Powered%20by-Streamlit-FF4B4B)](https://streamlit.io/)
+
+**Dezembro/2025**
+
+</div>
