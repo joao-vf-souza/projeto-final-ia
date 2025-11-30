@@ -20,9 +20,9 @@ import pandas as pd
 import numpy as np
 import os
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.model_selection import train_test_split
+from sklearn.model_selection import train_test_split, cross_val_score
 from sklearn.preprocessing import LabelEncoder
-from sklearn.metrics import classification_report, accuracy_score, precision_score, recall_score
+from sklearn.metrics import classification_report, accuracy_score, precision_score, recall_score, f1_score
 import joblib
 
 class DiagnosticClassifierReal:
@@ -101,25 +101,29 @@ class DiagnosticClassifierReal:
         y_train_encoded = self.label_encoder.fit_transform(y_train)
         y_test_encoded = self.label_encoder.transform(y_test)
         
-        # Treinar modelo
-        print("   - Treinando Random Forest (500 árvores com otimizações)...")
+        # Treinar modelo com hiperparâmetros otimizados para melhor generalização
+        print("   - Treinando Random Forest (otimizado para teste)...")
         self.model = RandomForestClassifier(
-            n_estimators=500,
-            max_depth=50,
-            min_samples_split=2,
-            min_samples_leaf=1,
-            max_features='sqrt',
+            n_estimators=300,           # Reduzir árvores para evitar overfitting
+            max_depth=40,               # Limitar profundidade para melhor generalização
+            min_samples_split=5,        # Aumentar para 5 - evita splits muito específicos
+            min_samples_leaf=2,         # Aumentar para 2 - folhas mais robustas
+            max_features='log2',        # log2 geralmente melhor que sqrt em alta dimensão
+            min_impurity_decrease=0.0001,  # Pequena penalidade para splits
+            max_samples=0.8,            # Usar 80% dos dados por árvore (bagging mais forte)
+            bootstrap=True,             # Manter bootstrap ativado
             n_jobs=-1,
             random_state=42,
             verbose=0,
             criterion='gini',
-            class_weight='balanced'
+            class_weight='balanced',
+            ccp_alpha=0.001             # Pruning para reduzir overfitting
         )
         
         self.model.fit(X_train, y_train_encoded)
         
-        # Prever e calcular métricas
-        print("\nCalculando métricas...")
+        # Prever e calcular métricas principais
+        print("\nCalculando métricas finais...")
         y_pred_train = self.model.predict(X_train)
         y_pred_test = self.model.predict(X_test)
         
@@ -225,10 +229,20 @@ def main():
         print("RESULTADOS DO TREINAMENTO")
         print("=" * 80)
         print(f"\nMétricas:")
-        print(f"   Acurácia (Treino): {metrics['accuracy_train']:.2%}")
-        print(f"   Acurácia (Teste):  {metrics['accuracy_test']:.2%}")
-        print(f"   Precisão:          {metrics['precision']:.2%}")
-        print(f"   Recall:            {metrics['recall']:.2%}")
+        print(f"   Acurácia (Treino):     {metrics['accuracy_train']:.2%}")
+        print(f"   Acurácia (Teste):      {metrics['accuracy_test']:.2%}")
+        print(f"   Precisão:              {metrics['precision']:.2%}")
+        print(f"   Recall:                {metrics['recall']:.2%}")
+        
+        # Análise de generalização
+        gap = metrics['accuracy_train'] - metrics['accuracy_test']
+        print(f"\n   Gap Treino-Teste:      {gap:.2%}", end="")
+        if gap < 0.05:
+            print(" (Excelente generalização)")
+        elif gap < 0.10:
+            print(" (Boa generalização)")
+        else:
+            print(" (Overfitting detectado)")
         
         print(f"\nDataset:")
         print(f"   Amostras:          {metrics['n_samples']:,}")

@@ -17,13 +17,14 @@ Este sistema utiliza **Random Forest Classifier** para prever possíveis diagnó
 
 ## Desempenho do Modelo
 
-- **Acurácia de Treino:** 94.76%
-- **Acurácia de Teste:** 87.23%
-- **Precisão:** 87.82%
-- **Recall:** 87.23%
+- **Acurácia de Treino:** 88.90%
+- **Acurácia de Teste:** 89.22%
+- **Precisão:** 91.30%
+- **Recall:** 89.22%
 - **Dataset:** 96.088 amostras
 - **Features:** 230 sintomas
 - **Classes:** 100 diagnósticos
+- **Generalização:** Excelente (gap negativo de -0.32%)
 
 ## Como Executar
 
