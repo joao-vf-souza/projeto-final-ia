@@ -192,10 +192,8 @@ A documentação técnica completa em formato LaTeX está disponível no arquivo
 
 ## 👤 Autores
 
-**João Victor Fernandes Souza**
+**João Victor Fernandes Souza** e
 **Vinicius Henrique de Oliveira Franzote**
-
-- UNESP Bauru - Bacharelado em Sistemas de Informação
 
 ## 🤝 Contribuições
 
