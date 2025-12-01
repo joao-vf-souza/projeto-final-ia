@@ -128,7 +128,6 @@ def load_disease_descriptions():
         descriptions = dict(zip(df.iloc[:, 0], df.iloc[:, 1]))
         return descriptions
     except Exception as e:
-        print(f"Erro ao carregar descrições: {e}")
         return {}
 
 # Função para renderizar box de emergência

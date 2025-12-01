@@ -44,13 +44,6 @@ env/
 .env
 .env.local
 
-# Models - Comentado para tentar subir o modelo
-# data/model_real.pkl
-# data/model.pkl
-
-# Large datasets - Baixar do Kaggle
-data/Diseases_and_Symptoms_dataset.csv
-
 # Logs
 *.log
 

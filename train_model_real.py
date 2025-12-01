@@ -102,7 +102,7 @@ class DiagnosticClassifierReal:
         y_test_encoded = self.label_encoder.transform(y_test)
         
         # Treinar modelo com hiperparâmetros otimizados para melhor generalização
-        print("   - Treinando Random Forest (otimizado para teste)...")
+        print("   - Treinando Random Forest...")
         self.model = RandomForestClassifier(
             n_estimators=300,           # Reduzir árvores para evitar overfitting
             max_depth=40,               # Limitar profundidade para melhor generalização
