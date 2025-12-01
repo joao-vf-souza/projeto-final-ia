@@ -2,7 +2,7 @@
 
 [![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://joao-vf-souza-projeto-final-ia-app-6ysln1.streamlit.app/)
 [![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
-[![scikit-learn](https://img.shields.io/badge/scikit--learn-1.5.2-orange.svg)](https://scikit-learn.org/)
+[![scikit-learn](https://img.shields.io/badge/scikit--learn-1.7.2-orange.svg)](https://scikit-learn.org/)
 
 > Sistema inteligente de diagnóstico médico preliminar baseado em Machine Learning, desenvolvido como projeto final do curso de Inteligência Artificial - Bacharelado em Sistemas de Informação.
 
@@ -21,9 +21,10 @@ Este projeto implementa um sistema automatizado de diagnóstico médico que util
 - **Diagnóstico Inteligente**: Classifica 100 diferentes condições médicas com base em 230 sintomas
 - **Sistema de Emergência**: Classifica automaticamente o nível de urgência (Verde, Amarelo, Laranja, Vermelho)
 - **Interface Interativa**: Aplicação web responsiva desenvolvida com Streamlit
-- **Análise de Confiança**: Exibe probabilidades e alternativas diagnósticas
+- **Análise de Confiança**: Exibe probabilidades e alternativas diagnósticas (confiança típica: 20-40%)
 - **Visualizações**: Gráficos interativos de importância de features e distribuição de dados
 - **Métricas Transparentes**: Acurácia de 89.22%, Precisão de 91.30%, Recall de 89.22%
+- **Descrições de Doenças**: Informações detalhadas sobre cada condição diagnosticada
 
 ## 🧠 Tecnologia e Metodologia
 
@@ -57,8 +58,8 @@ Este projeto implementa um sistema automatizado de diagnóstico médico que util
 ## 🛠️ Stack Tecnológica
 
 - **Linguagem**: Python 3.11+
-- **Machine Learning**: scikit-learn 1.5.2
-- **Interface Web**: Streamlit 1.28.1
+- **Machine Learning**: scikit-learn 1.7.2
+- **Interface Web**: Streamlit 1.51.0
 - **Manipulação de Dados**: Pandas 2.2.3, NumPy 1.26.4
 - **Visualizações**: Plotly 5.17.0, Matplotlib 3.8.1
 - **Serialização**: Joblib 1.3.2
@@ -86,28 +87,36 @@ streamlit run app.py
 
 A aplicação estará disponível em `http://localhost:8501`
 
-### Treinamento do Modelo
+### Treinamento do Modelo (Opcional)
+
+Se você quiser re-treinar o modelo do zero:
 
 ```bash
-# Para re-treinar o modelo (opcional)
+# 1. Baixe o dataset do Kaggle
+# https://www.kaggle.com/datasets/behzadhassan/sympscan-symptomps-to-disease
+
+# 2. Coloque o arquivo Diseases_and_Symptoms_dataset.csv na pasta data/
+
+# 3. Execute o treinamento
 python train_model_real.py
 ```
+
+> **Nota**: O modelo treinado já está incluído no repositório (`data/model_real.pkl`), então este passo é opcional.
 
 ## 📁 Estrutura do Projeto
 
 ```
 projeto-final-ia/
-├── app.py                      # Interface Streamlit
-├── train_model_real.py         # Script de treinamento do modelo
-├── emergency_level.py          # Sistema de níveis de emergência
-├── requirements.txt            # Dependências do projeto
-├── README.md                   # Este arquivo
-├── DOCUMENTACAO.pdf           # Documentação técnica completa (LaTeX)
-├── .gitignore                 # Arquivos ignorados pelo Git
+├── app.py                                  # Interface Streamlit
+├── train_model_real.py                     # Script de treinamento do modelo
+├── emergency_level.py                      # Sistema de níveis de emergência (4 níveis)
+├── requirements.txt                        # Dependências do projeto
+├── README.md                               # Este arquivo
+├── .gitignore                              # Arquivos ignorados pelo Git
 └── data/
-    ├── Diseases_and_Symptoms_dataset.csv  # Dataset principal
-    ├── description.csv                     # Descrições de doenças
-    └── model_real.pkl                      # Modelo treinado serializado
+    ├── Diseases_and_Symptoms_dataset.csv  # Dataset principal (96.088 amostras)
+    ├── description.csv                     # Descrições detalhadas das 100 doenças
+    └── model_real.pkl                      # Modelo treinado (~50MB)
 ```
 
 ## 🎓 Contexto Acadêmico
@@ -147,9 +156,25 @@ projeto-final-ia/
 - Estatísticas descritivas
 - Download em formato CSV
 
+## 📊 Sobre a Confiança das Predições
+
+Devido ao grande número de classes (100 doenças), é **normal e esperado** que o modelo apresente níveis de confiança relativamente baixos:
+
+- **Confiança Típica**: 20-40%
+- **Confiança Máxima Observada**: ~75%
+- **Confiança Média**: ~28%
+
+Esta característica é inerente a problemas de classificação multi-classe com muitas opções. O modelo ainda é altamente preciso (91.30% de precisão), mas distribui probabilidades entre múltiplas doenças similares.
+
+### Sistema de Avisos de Confiança
+
+- **Confiança ≥ 40%**: Sem aviso adicional
+- **Confiança 25-40%**: "Confiança moderada - Recomenda-se consulta médica"
+- **Confiança < 25%**: "Confiança muito baixa - CONSULTE UM MÉDICO"
+
 ## 🚨 Sistema de Níveis de Emergência
 
-O sistema classifica automaticamente a urgência do diagnóstico:
+O sistema classifica automaticamente a urgência do diagnóstico em **4 níveis** baseado em mapeamento de 100 doenças:
 
 | Nível | Cor | Descrição | Recomendação |
 |-------|-----|-----------|--------------|
@@ -167,18 +192,16 @@ O sistema classifica automaticamente a urgência do diagnóstico:
 - ✅ Ferramenta de aprendizado sobre Machine Learning aplicado à saúde
 - ✅ Em caso de emergência real, procure atendimento médico qualificado
 
-## 📚 Documentação Completa
+## 📚 Documentação Técnica
 
-A documentação técnica completa em formato LaTeX está disponível no arquivo `DOCUMENTACAO.pdf`, contendo:
+Documentação técnica detalhada disponível no repositório, incluindo:
 
-- Fundamentação teórica detalhada
-- Metodologia completa de desenvolvimento
-- Análise aprofundada de hiperparâmetros
-- Arquitetura detalhada do sistema
-- Implementação técnica
-- Limitações e trabalhos futuros
-- Aspectos éticos e legais
-- Referências bibliográficas
+- **Fundamentação teórica**: Random Forest e classificação multi-classe
+- **Hiperparâmetros otimizados**: 300 árvores, profundidade 40, regularização
+- **Pipeline completo**: Pré-processamento, treinamento, avaliação
+- **Sistema de emergência**: Mapeamento de 100 doenças em 4 níveis
+- **Análise de confiança**: Entendendo probabilidades em classificação multi-classe
+- **Métricas de desempenho**: Acurácia, Precisão, Recall detalhados
 
 ## 🔮 Trabalhos Futuros
 

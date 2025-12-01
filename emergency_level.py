@@ -179,8 +179,11 @@ class EmergencyLevel:
         level_info['level'] = level_key
         
         # Adiciona aviso se a confiança da predição for baixa
-        if confidence and confidence < 0.6:
-            level_info['aviso'] = f'Baixa confiança ({confidence:.0%}) - CONSULTE UM MÉDICO PARA CONFIRMAÇÃO'
+        # Nota: Com 100 classes, confiança típica é 20-40%, máxima observada ~75%
+        if confidence and confidence < 0.25:
+            level_info['aviso'] = f'Confiança muito baixa ({confidence:.0%}) - CONSULTE UM MÉDICO PARA CONFIRMAÇÃO'
+        elif confidence and confidence < 0.40:
+            level_info['aviso'] = f'Confiança moderada ({confidence:.0%}) - Recomenda-se consulta médica para confirmação'
         
         return level_info
     

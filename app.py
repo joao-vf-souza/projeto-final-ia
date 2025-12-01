@@ -211,7 +211,7 @@ with tab1:
     st.markdown("---")
     
     # Botão de diagnóstico
-    if st.button("🔍 Realizar Diagnóstico", key="diagnose_btn", use_container_width=True):
+    if st.button("🔍 Realizar Diagnóstico", key="diagnose_btn", width="stretch"):
         
         # Validar se pelo menos um sintoma foi selecionado
         if not any(symptoms_selected.values()):
@@ -299,7 +299,7 @@ with tab1:
             title='Probabilidade de cada diagnóstico'
         )
         fig.update_layout(height=400, showlegend=False)
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, width="stretch")
         
         # Resumo de sintomas selecionados
         st.markdown("### Sintomas Informados")
@@ -352,7 +352,7 @@ with tab2:
         title='Top 20 Sintomas Mais Importantes'
     )
     fig.update_layout(height=600)
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, width="stretch")
     
     st.markdown("---")
     
@@ -370,7 +370,7 @@ with tab2:
             labels={'x': 'Número de Amostras', 'y': 'Diagnóstico'}
         )
         fig.update_layout(height=600)
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, width="stretch")
 
 # ========================= ABA 3: INFORMAÇÕES =========================
 with tab3:
@@ -461,7 +461,7 @@ with tab4:
         
         df_filtered = df[df[diagnosis_col].isin(diagnosis_filter)]
         
-        st.dataframe(df_filtered, use_container_width=True, height=400)
+        st.dataframe(df_filtered, width="stretch", height=400)
         
         st.markdown(f"**Total de linhas:** {len(df_filtered)} / {len(df)}")
         
